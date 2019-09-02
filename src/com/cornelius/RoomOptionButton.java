@@ -6,12 +6,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class RoomOptionButton extends JPanel {
-    private String name;
-    private String address;
-    private int population;
     JLabel hostNameLabel;
     JLabel addressLabel;
     JLabel populationLabel;
+    private String name;
+    private String address;
+    private int population;
     //    private Color normalColor = new Color(66, 105, 223);
     private Color normalColor = Color.BLUE;
     private Color mouseEnteredColor = new Color(190, 202, 255, 255);
@@ -43,6 +43,8 @@ public class RoomOptionButton extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setBackground(mouseEnteredColor);
+                Client.setSelectedServer(address);
+                GUI.getInstance().createMainFrame(false);
             }
 
             @Override

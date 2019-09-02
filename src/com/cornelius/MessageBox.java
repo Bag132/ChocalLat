@@ -69,13 +69,6 @@ public class MessageBox extends JPanel {
 
     }
 
-    @Override
-    public void setBounds(int x, int y, int width, int height) {
-        //Disabled
-        //TODO Never use that disabled thing again I was sitting there for like an hour trying to find out what's wrong when I couldn't setBounds()
-        super.setBounds(x, y, width, height);
-    }
-
     public String getMessageText() {
         return messageText;
     }

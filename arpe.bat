@@ -1,1 +1,1 @@
-arp -a
+C:\Windows\system32\cmd.exe /K "arp -a"

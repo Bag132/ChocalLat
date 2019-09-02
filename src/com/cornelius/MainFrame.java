@@ -37,10 +37,14 @@ public class MainFrame extends JFrame {
     }
 
     public void addYourMessage(String message) {
+        if (!this.isHost) {
+            Client.writeToServer(message);
+        }
         add(new MessageBox(message, UserType.YOU));
         if (MessageBox.messages.size() > 1) {
             moveMessagesUp();
         }
+
     }
 
     public void addForeignMessage(String message) {

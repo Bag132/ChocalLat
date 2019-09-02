@@ -74,7 +74,7 @@ public class SetupFrame extends JFrame {
         refreshButton.setVisible(true);
         backButton.setVisible(true);
 
-        rooms = Client.getInstance().findRooms();
+        rooms = Client.findRooms();
         for (RoomOptionButton r : rooms) {
             r.setBounds(x, y, width, height);
             add(r);

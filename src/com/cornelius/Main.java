@@ -1,12 +1,18 @@
 package com.cornelius;
-
-import java.io.IOException;
-
+// %HOMEDRIVE%%HOMEPATH%
 class Main {
-    public static final String version = "Alpha";
-    public static Location userLocation = Location.SELECT_TYPE;
+    public static final String version = "Unreleased But Released";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
 
-    public static void main(String... cheese) throws InterruptedException, IOException {
+    public static void main(String... cheese) throws Shit {
         finnaYeet();
     }
 
@@ -14,5 +20,10 @@ class Main {
         GUI.getInstance().createSetupFrame();
     }
 
+    private class Shit extends Exception {
+        public Shit() {
+            super("AAAAAAAAAAAAA");
+        }
+    }
 
 }

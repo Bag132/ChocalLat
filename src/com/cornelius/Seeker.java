@@ -1,71 +1,111 @@
 package com.cornelius;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.net.UnknownHostException;
 
 public class Seeker extends Thread {
     private final String ip;
+    private String name;
     private Socket sock = null;
     private int timesToTry;
-    private ArrayList<Packet> roomsFound;
+    private boolean foundRoom = false;
+    private Packet foundServer;
 
     public Seeker(String ip) {
-        this(ip, 5);
+        this(ip, "Jeff");
     }
 
-    public Seeker(final String ip, int timesToTry) {
+    public Seeker(String ip, String name) {
+        this(ip, 5, name);
+    }
+
+    public Seeker(final String ip, final int timesToTry, final String name) {
         this.ip = ip;
         this.timesToTry = timesToTry;
+
     }
 
     @Override
     public void run() {
-        boolean foundRoom = false;
         try {
-            sock = new Socket(ip, Client.PORT);
-            ObjectInputStream objIn = new ObjectInputStream(sock.getInputStream());
-            ObjectOutputStream objOut = new ObjectOutputStream(sock.getOutputStream());
+            try {
+                sock = new Socket(ip, Client.PORT);
+            } catch (UnknownHostException uhe) {
+                System.out.println(ip + " is not a host");
+                return;
+            }
+            System.out.println(Main.ANSI_BLUE + "FOUND HOST AT " + ip + Main.ANSI_RESET);
             String message;
-            boolean found;
             int i = 0;
 
             do {
-                objIn = new ObjectInputStream(sock.getInputStream());
-                objOut.writeObject(Client.getGreetMessage("Jeff"));
-                message = (String) objIn.readObject();
-                found = message.contains("ACCEPT:");
+                DataOutputStream out = new DataOutputStream(sock.getOutputStream());
+                out.writeUTF(Client.getGreetMessage("Jeffrey"));
 
-                if (found) {
-                    roomsFound.add(new Packet(message));
-                    this.close();
-                    return;
-
+                try {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+                    message = in.readLine();
+                    System.out.println(message);
+                    in.close();
+                } catch (Exception e) {
+                    System.out.println("Couldn't readObject()");
+                    e.printStackTrace();
+                    message = "nope";
                 }
+
+                out.close();
+                foundRoom = message.contains("ACCEPT:");
+                if (foundRoom) {
+                    if (alreadyFound(new Packet(message))) {
+                        foundRoom = false;
+
+                    } else {
+                        foundServer = new Packet(message);
+                        this.close();
+                        return;
+                    }
+                }
+                i++;
             } while (i <= timesToTry);
             this.close();
 
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean alreadyFound(Packet p) {
+    private boolean alreadyFound(Packet p) {
         for (Packet pack : Client.roomsFound) {
-            if (p.equals(pack));
+            if (p.equals(pack)) {
+                return true;
+            }
         }
         return false;
     }
 
+    public boolean foundRoom() {
+        return foundRoom;
+    }
+
+    public Packet getFoundServer() {
+        return foundServer;
+    }
+
     public void close() {
-        interrupt();
         try {
             sock.close();
         } catch (IOException ignored) {
 
         }
+    }
+
+    public static String byteArrayToString(byte[] input) {
+        String output = "";
+        for (byte b : input) {
+            output.concat(Byte.toString(b));
+        }
+        return output;
     }
 }
 

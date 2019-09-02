@@ -79,8 +79,6 @@ public class Server implements Closeable {
                     ObjectInputStream objIn = new ObjectInputStream(received.getInputStream());
 
                     ObjectOutputStream objOut = new ObjectOutputStream(received.getOutputStream());
-
-
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
