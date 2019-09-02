@@ -1,5 +1,6 @@
 package com.cornelius;
 // %HOMEDRIVE%%HOMEPATH%
+// Zombie Spawner Coordinates: X = -150, Y = 21, Z = 330
 class Main {
     public static final String version = "Unreleased But Released";
     public static final String ANSI_RESET = "\u001B[0m";
