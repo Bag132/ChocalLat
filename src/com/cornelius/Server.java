@@ -1,9 +1,6 @@
 package com.cornelius;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,6 +12,15 @@ public class Server implements Closeable {
     public static ArrayList<Socket> connectedClients = new ArrayList<>();
     private static ServerSocket serverSock;
     public static String preferredName = "PreferredName";
+    private static Server instance;
+
+    public static Server getInstance() {
+        return instance = instance == null ? new Server() : instance;
+    }
+
+    private Server() {
+
+    }
 
     public void run() {
         try {
@@ -40,8 +46,9 @@ public class Server implements Closeable {
         }
     }
 
-    public void listenForConnections() {
-
+    public void listenForConnections() throws IOException {
+        Listener listener = new Listener();
+        listener.start();
     }
 
     public void hostChatroom() {
