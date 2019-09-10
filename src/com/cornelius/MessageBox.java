@@ -6,33 +6,32 @@ import java.awt.*;
 import java.util.ArrayList;
 
 enum UserType {FOREIGN, YOU, INFO}
-
+@SuppressWarnings("unused")
 public class MessageBox extends JPanel {
-    public static final ArrayList<MessageBox> messages = new ArrayList<>();
-    public static final int INITIAL_YOU_MESSAGE_X = MainFrame.FRAME_WIDTH - 70;
-    public static final int INITIAL_YOU_MESSAGE_Y = 500;
-    public static final int INITIAL_YOU_MESSAGE_WIDTH = 50;
-    public static final int INITIAL_YOU_MESSAGE_HEIGHT = 25;
-    public static final int INITIAL_FOREIGN_MESSAGE_X = 7;
-    public static final int INITIAL_FOREIGN_MESSAGE_Y = 500;
-    public static final int INITIAL_FOREIGN_MESSAGE_WIDTH = 50;
-    public static final int INITIAL_FOREIGN_MESSAGE_HEIGHT = 25;
-    public static final int MESSAGE_Y_SPACING = 26;
-    public static final int CHARACTER_WIDTH = 11;
-    public static final int CHARACTER_HEIGHT = 18;
+    static final ArrayList<MessageBox> messages = new ArrayList<>();
+    private static final int INITIAL_YOU_MESSAGE_X = MainFrame.FRAME_WIDTH - 70;
+    private static final int INITIAL_YOU_MESSAGE_Y = 500;
+    private static final int INITIAL_YOU_MESSAGE_WIDTH = 50;
+    private static final int INITIAL_YOU_MESSAGE_HEIGHT = 25;
+    private static final int INITIAL_FOREIGN_MESSAGE_X = 7;
+    private static final int INITIAL_FOREIGN_MESSAGE_Y = 500;
+    private static final int INITIAL_FOREIGN_MESSAGE_WIDTH = 50;
+    private static final int INITIAL_FOREIGN_MESSAGE_HEIGHT = 25;
+    static final int MESSAGE_Y_SPACING = 26;
+    private static final int CHARACTER_WIDTH = 11;
+    private static final int CHARACTER_HEIGHT = 18;
     public static final int MAX_CHARACTERS_ON_LINE = 0;
-    public static final int WEIRD_WIDTH_THING = 15;
-    private JLabel textLabel;
+    private static final int WEIRD_WIDTH_THING = 15;
     private String messageText;
 
-    public MessageBox(String message, UserType type) {
+    MessageBox(String message, UserType type) {
         super();
         if (type != UserType.INFO) {
 
             super.setBorder(type == UserType.YOU ? BorderFactory.createSoftBevelBorder(BevelBorder.RAISED, new Color(59, 67, 255), new Color(0, 0, 176)) : BorderFactory.createSoftBevelBorder(0));
         }
         this.messageText = message;
-        textLabel = new JLabel(message);
+        JLabel textLabel = new JLabel(message);
         super.setLayout(null);
 
         switch (type) {
@@ -69,7 +68,7 @@ public class MessageBox extends JPanel {
 
     }
 
-    public String getMessageText() {
+    String getMessageText() {
         return messageText;
     }
 

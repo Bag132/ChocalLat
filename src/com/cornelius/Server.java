@@ -6,20 +6,26 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 
 public class Server implements Closeable {
     private static final int PORT = 9876;
     public static ArrayList<Socket> connectedClients = new ArrayList<>();
-    private static ServerSocket serverSock;
     public static String preferredName = "PreferredName";
+    private static ServerSocket serverSock;
     private static Server instance;
+    private Listener listener;
+
+    private Server() {
+        try {
+            serverSock = new ServerSocket(PORT);
+        } catch (IOException ignored) {
+            ignored.printStackTrace();
+        }
+    }
 
     public static Server getInstance() {
         return instance = instance == null ? new Server() : instance;
-    }
-
-    private Server() {
-
     }
 
     public void run() {
@@ -46,22 +52,26 @@ public class Server implements Closeable {
         }
     }
 
-    public void listenForConnections() throws IOException {
-        Listener listener = new Listener();
+    public void listenForConnections() {
+        listener = new Listener();
         listener.start();
+    }
+
+    public void stopListening() {
+        listener.interrupt();
     }
 
     public void hostChatroom() {
 
     }
 
-    public String getAcceptMessage() {
+    public static String getAcceptMessage() {
         String ip = null;
         String hostname = null;
         try {
             ip = InetAddress.getLocalHost().getHostAddress();
             hostname = InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException uhe){
+        } catch (UnknownHostException uhe) {
             uhe.printStackTrace();
         }
 
@@ -73,19 +83,18 @@ public class Server implements Closeable {
     }
 
     class Listener extends Thread {
-        ServerSocket serverSock = null;
 
         public void run() {
             try {
                 Socket received;
-                serverSock = new ServerSocket(PORT);
 
                 while (!isInterrupted()) {
                     received = serverSock.accept();
-
-                    ObjectInputStream objIn = new ObjectInputStream(received.getInputStream());
-
-                    ObjectOutputStream objOut = new ObjectOutputStream(received.getOutputStream());
+                    BufferedReader socketReader = new BufferedReader(new InputStreamReader(received.getInputStream()));
+                    PrintWriter socketPrinter = new PrintWriter(received.getOutputStream());
+                    Server.connectedClients.add(received);
+                    System.out.println(socketReader.readLine());
+                    socketPrinter.println(Server.getAcceptMessage());
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();

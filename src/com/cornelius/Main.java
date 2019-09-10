@@ -1,4 +1,5 @@
 package com.cornelius;
+
 // %HOMEDRIVE%%HOMEPATH%
 // Zombie Spawner Coordinates: X = -150, Y = 21, Z = 330
 class Main {
@@ -15,8 +16,6 @@ class Main {
 
     public static void main(String... cheese) throws Shit {
         finnaYeet();
-        System.out.println(2.5 * 2 + 8 / 5.0 + 10 / 3         );
-
     }
 
     public static void finnaYeet() {

@@ -1,7 +1,6 @@
 package com.cornelius;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 
 public class BackButton extends JButton {

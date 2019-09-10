@@ -156,7 +156,7 @@ public class Client {
             } catch (IOException ex) {
             }
         }
-        for (String h : hosts){
+        for (String h : hosts) {
             System.out.println("\"" + h + "\"");
         }
         return hosts;

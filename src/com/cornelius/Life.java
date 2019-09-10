@@ -1,4 +1,5 @@
 package com.cornelius;
+
 //FIXME
-public class Life {
+class Life {
 }

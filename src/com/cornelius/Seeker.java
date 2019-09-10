@@ -1,6 +1,9 @@
 package com.cornelius;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -24,6 +27,14 @@ public class Seeker extends Thread {
         this.ip = ip;
         this.timesToTry = timesToTry;
 
+    }
+
+    public static String byteArrayToString(byte[] input) {
+        String output = "";
+        for (byte b : input) {
+            output.concat(Byte.toString(b));
+        }
+        return output;
     }
 
     @Override
@@ -98,14 +109,6 @@ public class Seeker extends Thread {
         } catch (IOException ignored) {
 
         }
-    }
-
-    public static String byteArrayToString(byte[] input) {
-        String output = "";
-        for (byte b : input) {
-            output.concat(Byte.toString(b));
-        }
-        return output;
     }
 }
 

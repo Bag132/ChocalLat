@@ -7,8 +7,8 @@ import static com.cornelius.MessageBox.MESSAGE_Y_SPACING;
 import static com.cornelius.MessageBox.messages;
 
 public class MainFrame extends JFrame {
-    public static final int FRAME_WIDTH = 400;
-    public static final int FRAME_HEIGHT = 600;
+    static final int FRAME_WIDTH = 400;
+    static final int FRAME_HEIGHT = 600;
     //TODO Make this variable function
     private boolean isHost = false;
     private double scroll = 0;
