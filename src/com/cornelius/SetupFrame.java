@@ -158,7 +158,7 @@ public class SetupFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 GUI.getInstance().createMainFrame(true);
-//                Server.listen
+                Server.getInstance().hostChatroom();
                 setVisible(false);
             }
 

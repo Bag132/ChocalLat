@@ -6,7 +6,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 
 public class Server implements Closeable {
     private static final int PORT = 9876;
@@ -53,8 +52,7 @@ public class Server implements Closeable {
     }
 
     public void listenForConnections() {
-        listener = new Listener();
-        listener.start();
+
     }
 
     public void stopListening() {
@@ -62,7 +60,8 @@ public class Server implements Closeable {
     }
 
     public void hostChatroom() {
-
+        listener = new Listener();
+        listener.start();
     }
 
     public static String getAcceptMessage() {
@@ -86,18 +85,35 @@ public class Server implements Closeable {
 
         public void run() {
             try {
-                Socket received;
-
                 while (!isInterrupted()) {
-                    received = serverSock.accept();
-                    BufferedReader socketReader = new BufferedReader(new InputStreamReader(received.getInputStream()));
-                    PrintWriter socketPrinter = new PrintWriter(received.getOutputStream());
+                    System.out.println("Waiting for clients to connect");
+                    Socket received = serverSock.accept();
+                    DataInputStream socketReader = new DataInputStream(received.getInputStream());
+                    DataOutputStream socketPrinter = new DataOutputStream(received.getOutputStream());
+
                     Server.connectedClients.add(received);
-                    System.out.println(socketReader.readLine());
-                    socketPrinter.println(Server.getAcceptMessage());
+                    String messageRecieved = socketReader.readUTF();
+                    System.out.println("Recieved from client: " + messageRecieved);
+                    socketPrinter.writeUTF(Server.getAcceptMessage());
+                    GUI.getInstance().addForeignMessage(messageRecieved);
+
+                    received.close();
+                    socketPrinter.close();
+                    socketReader.close();
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
+            }
+        }
+    }
+
+    class ChatroomHostThread extends Thread {
+
+        @Override
+        public void run() {
+
+            while (!isInterrupted()) {
+
             }
         }
     }

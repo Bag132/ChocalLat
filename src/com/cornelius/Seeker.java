@@ -53,6 +53,7 @@ public class Seeker extends Thread {
             do {
                 DataOutputStream out = new DataOutputStream(sock.getOutputStream());
                 out.writeUTF(Client.getGreetMessage("Jeffrey"));
+                System.out.println(Client.getGreetMessage("Jeffrey"));
 
                 try {
                     BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));

@@ -107,7 +107,7 @@ public class Client {
         System.out.println("Called getHosts");
         ArrayList<String> hosts = new ArrayList<>();
         ProcessBuilder pb = new ProcessBuilder("arpe.bat");
-        pb.redirectErrorStream();
+//        pb.redirectErrorStream();
         Process p = null;
         try {
             p = pb.start();
@@ -155,9 +155,6 @@ public class Client {
                 br.close();
             } catch (IOException ex) {
             }
-        }
-        for (String h : hosts) {
-            System.out.println("\"" + h + "\"");
         }
         return hosts;
     }
