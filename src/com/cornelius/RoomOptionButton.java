@@ -6,9 +6,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class RoomOptionButton extends JPanel {
-    private JLabel hostNameLabel;
-    private JLabel addressLabel;
-    private JLabel populationLabel;
+    JLabel hostNameLabel;
+    JLabel addressLabel;
+    JLabel populationLabel;
     private String name;
     private String address;
     private int population;
@@ -17,7 +17,7 @@ public class RoomOptionButton extends JPanel {
     private Color mouseEnteredColor = new Color(190, 202, 255, 255);
     private Color mousePressedColor = new Color(0, 12, 214);
 
-    RoomOptionButton(String name, String address, int population) {
+    public RoomOptionButton(String name, String address, int population) {
         super();
         this.name = name;
         this.address = address;

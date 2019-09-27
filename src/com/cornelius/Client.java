@@ -14,7 +14,7 @@ public class Client {
     public static ArrayList<Packet> roomsFound = new ArrayList<>();
     public static String serverIP;
     private static Socket selectedServer;
-    private static DataInputStream selectedServerIn;
+    private static BufferedReader selectedServerIn;
     private static DataOutputStream selectedServerOut;
 
     public Client() {
@@ -39,8 +39,12 @@ public class Client {
                             hideN.getFoundServer().getAddress(),
                             Integer.parseInt(hideN.getFoundServer().getPopulation())));
                 }
-            } catch (InterruptedException | NullPointerException ie) {
+            } catch (InterruptedException ie) {
                 ie.printStackTrace();
+                continue;
+            } catch (NullPointerException npe) {
+                npe.printStackTrace();
+                continue;
             }
         }
         RoomOptionButton[] buttonArray = new RoomOptionButton[roomButtons.size()];
@@ -55,14 +59,9 @@ public class Client {
     public static void writeToServer(String message) {
         try {
             System.out.println("Writing " + message + " to server");
-            final Socket sendSocket = new Socket(selectedServer.getInetAddress().getHostAddress(), PORT);
-            final DataOutputStream toServer = new DataOutputStream(sendSocket.getOutputStream());
-            toServer.writeUTF(message);
-            toServer.close();
-            sendSocket.close();
-        } catch (IOException | NullPointerException ioe) {
+            selectedServerOut.writeUTF(message);
+        } catch (IOException ioe) {
             ioe.printStackTrace();
-            System.out.println(ioe.getMessage());
         }
     }
 
@@ -76,15 +75,7 @@ public class Client {
     }
 
     public static void setSelectedServer(Socket sock) {
-        try {
-            selectedServer = new Socket(sock.getInetAddress().getHostAddress(), PORT);
-            selectedServerOut = new DataOutputStream(sock.getOutputStream());
-            selectedServerIn = new DataInputStream(sock.getInputStream());
-
-            System.out.println("Selected server address is " + selectedServer.getInetAddress().getHostAddress());
-        }catch(IOException ioe) {
-            ioe.printStackTrace();
-        }
+        selectedServer = sock;
     }
 
     public static void setSelectedServer(String address) {
@@ -96,7 +87,7 @@ public class Client {
     }
 
 
-    static String getGreetMessage(String preferredName) {
+    public static String getGreetMessage(String preferredName) {
         String ip = null;
         String hostname = null;
         try {
@@ -131,7 +122,7 @@ public class Client {
             String l = null;
             try {
                 l = br.readLine();
-            } catch (IOException ignored) {
+            } catch (IOException ex) {
             }
             if (l == null)
                 break;
@@ -162,7 +153,7 @@ public class Client {
             }
             try {
                 br.close();
-            } catch (IOException ignored) {
+            } catch (IOException ex) {
             }
         }
         return hosts;
