@@ -15,6 +15,12 @@ class Main {
     public static final String ANSI_WHITE = "\u001B[37m";
 
     public static void main(String... cheese) throws Shit {
+        Thread t = new Thread(() -> {
+            GUI.getInstance().createMainFrame(true);
+            Server.getInstance().hostChatroom();
+        });
+
+        t.start();
         finnaYeet();
     }
 
