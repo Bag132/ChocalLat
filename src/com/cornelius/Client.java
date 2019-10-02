@@ -10,18 +10,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Client {
-    public static final int PORT = 9876;
-    public static ArrayList<Packet> roomsFound = new ArrayList<>();
-    public static String serverIP;
+    static final int PORT = 9876;
+    static ArrayList<Packet> roomsFound = new ArrayList<>();
     private static Socket selectedServer;
-    private static BufferedReader selectedServerIn;
-    private static DataOutputStream selectedServerOut;
 
     public Client() {
 
     }
 
-    public static RoomOptionButton[] findRooms() {
+    static RoomOptionButton[] findRooms() {
         ArrayList<Seeker> seekers = new ArrayList<>();
         for (String address : Objects.requireNonNull(getHosts(true))) {
             Seeker s = new Seeker(address);
@@ -39,12 +36,8 @@ public class Client {
                             hideN.getFoundServer().getAddress(),
                             Integer.parseInt(hideN.getFoundServer().getPopulation())));
                 }
-            } catch (InterruptedException ie) {
+            } catch (InterruptedException | NullPointerException ie) {
                 ie.printStackTrace();
-                continue;
-            } catch (NullPointerException npe) {
-                npe.printStackTrace();
-                continue;
             }
         }
         RoomOptionButton[] buttonArray = new RoomOptionButton[roomButtons.size()];
@@ -56,29 +49,20 @@ public class Client {
         return buttonArray;
     }
 
-    public static void writeToServer(String message) {
+    static void writeToServer(final String message) {
         try {
             System.out.println("Writing " + message + " to server");
-            selectedServerOut.writeUTF(message);
+            Socket s = new Socket(selectedServer.getInetAddress().getHostAddress(), PORT);
+            DataOutputStream dataOut = new DataOutputStream(s.getOutputStream());
+            dataOut.writeUTF(message);
+            dataOut.close();
+            s.close();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public static String getServerMessage() {
-        try {
-            return selectedServerIn.readLine();
-        } catch (IOException io) {
-            io.printStackTrace();
-            return "null";
-        }
-    }
-
-    public static void setSelectedServer(Socket sock) {
-        selectedServer = sock;
-    }
-
-    public static void setSelectedServer(String address) {
+    static void setSelectedServer(String address) {
         try {
             selectedServer = new Socket(address, PORT);
         } catch (IOException ioe) {
@@ -87,7 +71,7 @@ public class Client {
     }
 
 
-    public static String getGreetMessage(String preferredName) {
+    static String getGreetMessage(String preferredName) {
         String ip = null;
         String hostname = null;
         try {
@@ -103,12 +87,12 @@ public class Client {
         return getHosts(false);
     }
 
-    public static ArrayList<String> getHosts(boolean pingSelf) {
+    private static ArrayList<String> getHosts(boolean pingSelf) {
         System.out.println("Called getHosts");
         ArrayList<String> hosts = new ArrayList<>();
         ProcessBuilder pb = new ProcessBuilder("arpe.bat");
 //        pb.redirectErrorStream();
-        Process p = null;
+        Process p;
         try {
             p = pb.start();
         } catch (IOException io) {
@@ -117,26 +101,26 @@ public class Client {
         }
 
         BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String out = "";
+        StringBuilder out = new StringBuilder();
         while (true) {
             String l = null;
             try {
                 l = br.readLine();
-            } catch (IOException ex) {
+            } catch (IOException ignored) {
             }
             if (l == null)
                 break;
-            out += "\n" + l;
+            out.append("\n").append(l);
         }
 
         Pattern pattern =
                 Pattern.compile(".*\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b");
-        Matcher match = pattern.matcher(out);
-        out = "";
-        String prev = "", pLoc;
+        Matcher match = pattern.matcher(out.toString());
+        out = new StringBuilder();
+        String pLoc;
 
         if (!(match.find())) {
-            out = "No IP found";
+            out = new StringBuilder("No IP found");
         } else {
             if (pingSelf) {
                 System.out.println("Adding localhost");
@@ -146,20 +130,19 @@ public class Client {
                     uhe.printStackTrace();
                 }
             }
-            pLoc = match.group();
             while (match.find()) {
                 pLoc = match.group();
                 hosts.add(pLoc);
             }
             try {
                 br.close();
-            } catch (IOException ex) {
+            } catch (IOException ignored) {
             }
         }
         return hosts;
     }
 
-    public static void addRoomToList(Packet p) {
+    private static void addRoomToList(Packet p) {
         for (Packet pack : roomsFound) {
             if (pack.equals(p)) {
                 return;
