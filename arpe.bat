@@ -1,1 +1,1 @@
-arp -a
+C:/Windows/System32/ARP -a

@@ -18,11 +18,11 @@ class Main {
         finnaYeet();
     }
 
-    public static void finnaYeet() {
+    private static void finnaYeet() {
         GUI.getInstance().createSetupFrame();
     }
 
-    private class Shit extends Exception {
+    private static class Shit extends Exception {
         public Shit() {
             super("AAAAAAAAAAAAA");
         }
