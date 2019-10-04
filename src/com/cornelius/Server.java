@@ -81,6 +81,20 @@ public class Server implements Closeable {
 
     }
 
+    static void writeToAllConnected(String message) {
+        for (Socket s : connectedClients) {
+            try {
+                Socket client = new Socket(s.getInetAddress().getHostAddress(), PORT);
+                DataOutputStream dataOut = new DataOutputStream(client.getOutputStream());
+                dataOut.writeUTF(message);
+                dataOut.close();
+                client.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     class Listener extends Thread {
 
         public void run() {
@@ -88,6 +102,7 @@ public class Server implements Closeable {
                 while (!isInterrupted()) {
                     System.out.println("Waiting for clients to connect");
                     Socket received = serverSock.accept();
+                    System.out.println("Recieved");
                     DataInputStream socketReader = new DataInputStream(received.getInputStream());
                     DataOutputStream socketPrinter = new DataOutputStream(received.getOutputStream());
 
