@@ -36,9 +36,13 @@ public class MainFrame extends JFrame {
         super.setVisible(visible);
     }
 
-    public void addYourMessage(String message) {
+    void addYourMessage(String message) {
         if (!this.isHost) {
+            System.out.println("Writing " + message);
             Client.writeToServer(message);
+        } else {
+            System.out.println("Sending to all: " + message);
+            Server.writeToAllConnected(message);
         }
         add(new MessageBox(message, UserType.YOU));
         if (MessageBox.messages.size() > 1) {

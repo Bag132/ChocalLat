@@ -22,6 +22,7 @@ public class SubmitButton extends JButton {
     }
 
     public void enterMessage() {
+//        Client.writeToServer(GUI.getInstance().getInputFieldText());
         GUI.getInstance().addYourMessage(GUI.getInstance().getInputFieldText());
         GUI.getInstance().setInputFieldText("");
     }

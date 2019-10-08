@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 enum UserType {FOREIGN, YOU, INFO}
+
 @SuppressWarnings("unused")
 public class MessageBox extends JPanel {
     static final ArrayList<MessageBox> messages = new ArrayList<>();

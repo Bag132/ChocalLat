@@ -52,10 +52,8 @@ public class GUI {
         }
     }
 
-    public void addYourMessage(String message) {
-        if (mainFrame == null) {
-            return;
-        } else {
+    void addYourMessage(String message) {
+        if (mainFrame != null) {
             mainFrame.addYourMessage(message);
             mainFrame.repaint();
         }

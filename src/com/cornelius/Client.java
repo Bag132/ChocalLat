@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class Client {
     static final int PORT = 9876;
     static ArrayList<Packet> roomsFound = new ArrayList<>();
-    private static Socket selectedServer;
+    private static String serverIP;
 
     public Client() {
 
@@ -52,7 +52,7 @@ public class Client {
     static void writeToServer(final String message) {
         try {
             System.out.println("Writing " + message + " to server");
-            Socket s = new Socket(selectedServer.getInetAddress().getHostAddress(), PORT);
+            Socket s = new Socket(serverIP, PORT);
             DataOutputStream dataOut = new DataOutputStream(s.getOutputStream());
             dataOut.writeUTF(message);
             dataOut.close();
@@ -62,12 +62,8 @@ public class Client {
         }
     }
 
-    static void setSelectedServer(String address) {
-        try {
-            selectedServer = new Socket(address, PORT);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+    static void setSelectedServer(final String address) {
+        serverIP = address;
     }
 
 
@@ -91,7 +87,6 @@ public class Client {
         System.out.println("Called getHosts");
         ArrayList<String> hosts = new ArrayList<>();
         ProcessBuilder pb = new ProcessBuilder("arpe.bat");
-//        pb.redirectErrorStream();
         Process p;
         try {
             p = pb.start();
