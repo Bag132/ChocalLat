@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Server implements Closeable {
     private static final int PORT = 9876;
-    public static ArrayList<Socket> connectedClients = new ArrayList<>();
+    public static ArrayList<String> connectedClients = new ArrayList<>();
     public static String preferredName = "PreferredName";
     private static ServerSocket serverSock;
     private static Server instance;
@@ -82,9 +82,12 @@ public class Server implements Closeable {
     }
 
     static void writeToAllConnected(String message) {
-        for (Socket s : connectedClients) {
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~ " + message);
+        for (String s : connectedClients) {
+            String str = s;
+            System.out.println("Writing " + message + " to " + str);
             try {
-                Socket client = new Socket(s.getInetAddress().getHostAddress(), PORT);
+                Socket client = new Socket(str, PORT);
                 DataOutputStream dataOut = new DataOutputStream(client.getOutputStream());
                 dataOut.writeUTF(message);
                 dataOut.close();
@@ -106,7 +109,7 @@ public class Server implements Closeable {
                     DataInputStream socketReader = new DataInputStream(received.getInputStream());
                     DataOutputStream socketPrinter = new DataOutputStream(received.getOutputStream());
 
-                    Server.connectedClients.add(received);
+                    Server.connectedClients.add(received.getInetAddress().getHostAddress());
                     String messageRecieved = socketReader.readUTF();
                     System.out.println("Recieved from client: " + messageRecieved);
                     socketPrinter.writeUTF(Server.getAcceptMessage());
