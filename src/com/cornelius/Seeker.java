@@ -43,7 +43,7 @@ public class Seeker extends Thread {
             try {
                 sock = new Socket(ip, Client.PORT);
             } catch (UnknownHostException uhe) {
-                System.out.println(ip + " is not a host");
+//                System.out.println(ip + " is not a host");
                 return;
             }
             System.out.println(Main.ANSI_BLUE + "FOUND HOST AT " + ip + Main.ANSI_RESET);
@@ -88,7 +88,7 @@ public class Seeker extends Thread {
     }
 
     private boolean alreadyFound(Packet p) {
-        for (Packet pack : Client.roomsFound) {
+        for (Packet pack : Client.getInstance().roomsFound) {
             if (p.equals(pack)) {
                 return true;
             }

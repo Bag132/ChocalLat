@@ -81,20 +81,20 @@ public class Server implements Closeable {
 
     }
 
-    static void writeToAllConnected(String message) {
+    static void writeToAllConnected(final String message) {
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~ " + message);
-        for (String s : connectedClients) {
-            System.out.println("Writing " + message + " to " + s);
+//        for (final String s : connectedClients) {
+            System.out.println("Writing " + message + " to " + connectedClients.get(0));
             try {
-                Socket client = new Socket(s, PORT);
-                DataOutputStream dataOut = new DataOutputStream(client.getOutputStream());
+                final Socket client = new Socket(connectedClients.get(0), PORT);
+                final DataOutputStream dataOut = new DataOutputStream(client.getOutputStream());
                 dataOut.writeUTF(message);
                 dataOut.close();
                 client.close();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
-        }
+//        }
     }
 
     class Listener extends Thread {

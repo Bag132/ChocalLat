@@ -43,7 +43,8 @@ public class RoomOptionButton extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setBackground(mouseEnteredColor);
-                Client.setSelectedServer(address);
+                Client.getInstance().setSelectedServer(address);
+                Client.getInstance().joinServer();
                 GUI.getInstance().createMainFrame(false);
             }
 

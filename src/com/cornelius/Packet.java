@@ -4,7 +4,7 @@ public class Packet {
     private String[] packetContents;
     private String fullMessage;
 
-    public Packet(String packet) {
+    Packet(String packet) {
         this.fullMessage = packet;
         packetContents = packet.split(":");
     }

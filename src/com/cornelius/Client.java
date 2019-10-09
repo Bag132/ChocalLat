@@ -2,6 +2,7 @@ package com.cornelius;
 
 import java.io.*;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -11,14 +12,19 @@ import java.util.regex.Pattern;
 
 public class Client {
     static final int PORT = 9876;
-    static ArrayList<Packet> roomsFound = new ArrayList<>();
-    private static String serverIP;
+    private static Client instance;
+    ArrayList<Packet> roomsFound = new ArrayList<>();
+    private String serverIP;
 
-    public Client() {
+    private Client() {
 
     }
 
-    static RoomOptionButton[] findRooms() {
+    public static Client getInstance() {
+        return instance = instance == null ? new Client() : instance;
+    }
+
+    RoomOptionButton[] findRooms() {
         ArrayList<Seeker> seekers = new ArrayList<>();
         for (String address : Objects.requireNonNull(getHosts(true))) {
             Seeker s = new Seeker(address);
@@ -49,9 +55,14 @@ public class Client {
         return buttonArray;
     }
 
-    static void writeToServer(final String message) {
+    void joinServer() {
+//        ListenForMessages listener = new ListenForMessages();
+//        listener.start();
+    }
+
+    void writeToServer(final String message) {
         try {
-            System.out.println("Writing " + message + " to server");
+            System.out.println("Writing " + message + " to " + serverIP);
             Socket s = new Socket(serverIP, PORT);
             DataOutputStream dataOut = new DataOutputStream(s.getOutputStream());
             dataOut.writeUTF(message);
@@ -62,7 +73,7 @@ public class Client {
         }
     }
 
-    static void setSelectedServer(final String address) {
+    void setSelectedServer(final String address) {
         serverIP = address;
     }
 
@@ -79,11 +90,11 @@ public class Client {
         return "GREET:" + ip + ":" + hostname + ":" + preferredName + ":joining";
     }
 
-    public static ArrayList<String> getHosts() {
+    public ArrayList<String> getHosts() {
         return getHosts(false);
     }
 
-    private static ArrayList<String> getHosts(boolean pingSelf) {
+    private ArrayList<String> getHosts(boolean pingSelf) {
         System.out.println("Called getHosts");
         ArrayList<String> hosts = new ArrayList<>();
         ProcessBuilder pb = new ProcessBuilder("arpe.bat");
@@ -137,7 +148,7 @@ public class Client {
         return hosts;
     }
 
-    private static void addRoomToList(Packet p) {
+    private void addRoomToList(Packet p) {
         for (Packet pack : roomsFound) {
             if (pack.equals(p)) {
                 return;
@@ -186,10 +197,6 @@ public class Client {
         }
     }
 
-    public void close() {
-        //TODO
-    }
-
     public String getChatMessage(String message) {
         String ip = null;
         String hostname = null;
@@ -216,6 +223,26 @@ public class Client {
     }
 
 
+    // TODO Copy this class into the main project
+
+    private class ListenForMessages extends Thread {
+
+        @Override
+        public void run() {
+            while (!isInterrupted()) {
+                try {
+                    final Socket sock = new Socket(serverIP, PORT);
+                    DataInputStream dataIn = new DataInputStream(sock.getInputStream());
+                    if (!dataIn.readUTF().equals("")) {
+                        GUI.getInstance().addForeignMessage(dataIn.readUTF());
+                    }
+
+                } catch (Exception ignored) {
+
+                }
+            }
+        }
+    }
 }
 
 // CONTEXT:10.0.0.1:HostName:Preferred Name:Message:Population

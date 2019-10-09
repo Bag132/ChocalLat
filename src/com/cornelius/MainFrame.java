@@ -13,7 +13,7 @@ public class MainFrame extends JFrame {
     private boolean isHost = false;
     private double scroll = 0;
 
-    public MainFrame(boolean host) {
+    MainFrame(boolean host) {
         super("Secret Student Chatroom | " + Main.version);
         this.isHost = host;
     }
@@ -39,7 +39,7 @@ public class MainFrame extends JFrame {
     void addYourMessage(String message) {
         if (!this.isHost) {
             System.out.println("Writing " + message);
-            Client.writeToServer(message);
+            Client.getInstance().writeToServer(message);
         } else {
             System.out.println("Sending to all: " + message);
             Server.writeToAllConnected(message);
@@ -67,8 +67,12 @@ public class MainFrame extends JFrame {
             MessageBox m = messages.get(i);
             int og = m.getY();
             m.setBounds(m.getX(), og - MESSAGE_Y_SPACING, m.getWidth(), m.getHeight());
-            System.out.println(m.getMessageText() + " " + og + " -> " + m.getY());
+//            System.out.println(m.getMessageText() + " " + og + " -> " + m.getY());
 
         }
+    }
+
+    public boolean isHost() {
+        return this.isHost;
     }
 }

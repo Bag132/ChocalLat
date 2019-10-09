@@ -1,4 +1,4 @@
-package com.cornelius;
+ package com.cornelius;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -38,6 +38,10 @@ public class GUI {
 
     public boolean mainIsCreated() {
         return mainCreated;
+    }
+
+    public boolean mainFrameIsHost() {
+        return mainFrame.isHost();
     }
 
     public String getInputFieldText() {
