@@ -1,5 +1,7 @@
 package com.cornelius;
 
+import java.util.function.Consumer;
+
 // %HOMEDRIVE%%HOMEPATH%
 // Zombie Spawner Coordinates: X = -150, Y = 21, Z = 330
 class Main {
@@ -16,6 +18,12 @@ class Main {
 
     public static void main(String... cheese) throws Shit {
         finnaYeet();
+//        testMethod(System.out::println);
+    }
+
+    // I am god
+    private static void testMethod(Consumer<String> action) {
+        action.accept("Test Worked");
     }
 
     private static void finnaYeet() {

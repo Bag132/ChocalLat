@@ -2,7 +2,6 @@ package com.cornelius;
 
 import java.io.*;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -14,6 +13,7 @@ public class Client {
     static final int PORT = 9876;
     private static Client instance;
     ArrayList<Packet> roomsFound = new ArrayList<>();
+    private volatile ArrayList<String> queuedMessages = new ArrayList<>();
     private String serverIP;
 
     private Client() {
@@ -56,18 +56,15 @@ public class Client {
     }
 
     void joinServer() {
-//        ListenForMessages listener = new ListenForMessages();
-//        listener.start();
+        ListenForMessages listener = new ListenForMessages();
+        listener.start();
     }
 
-    void writeToServer(final String message) {
+    void writeToServer(final Socket sock, final String message) {
         try {
             System.out.println("Writing " + message + " to " + serverIP);
-            Socket s = new Socket(serverIP, PORT);
             DataOutputStream dataOut = new DataOutputStream(s.getOutputStream());
             dataOut.writeUTF(message);
-            dataOut.close();
-            s.close();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -225,23 +222,36 @@ public class Client {
 
     // TODO Copy this class into the main project
 
-    private class ListenForMessages extends Thread {
+    private class ListenForMessages extends Thread implements Runnable {
+        private final ArrayList<String> queuedMessages = new ArrayList<>();
 
         @Override
         public void run() {
             while (!isInterrupted()) {
                 try {
                     final Socket sock = new Socket(serverIP, PORT);
-                    DataInputStream dataIn = new DataInputStream(sock.getInputStream());
-                    if (!dataIn.readUTF().equals("")) {
-                        GUI.getInstance().addForeignMessage(dataIn.readUTF());
+                    final DataInputStream dataIn = new DataInputStream(sock.getInputStream());
+                    final DataOutputStream dataOut = new DataOutputStream(sock.getOutputStream());
+
+                    final String received = dataIn.readUTF();
+                    System.out.println(received);
+                    if (!received.equals("")) {
+                        GUI.getInstance().addForeignMessage(received);
                     }
 
-                } catch (Exception ignored) {
+                    queuedMessages.forEach(Client.getInstance()::writeToServer);
+                    queuedMessages.forEach(queuedMessages::remove);
 
+                } catch (Exception e) {
+                    System.out.println(e.getClass().getSimpleName() + " | No messages");
                 }
             }
         }
+
+        private synchronized void queueMessage(final String message) {
+            queuedMessages.add(message);
+        }
+
     }
 }
 
